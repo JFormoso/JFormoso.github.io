@@ -1,5 +1,5 @@
 ---
-title: "Aprendiendo R"
+title: "Visualización de datos con R y ggplot2"
 output:
   xaringan::moon_reader:
     lib_dir: libs
