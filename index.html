@@ -1,25 +1,1416 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Presentation Ninja</title>
+    <title>Aprendiendo R</title>
     <meta charset="utf-8" />
     <script src="libs/header-attrs/header-attrs.js"></script>
-    <link href="libs/remark-css/default.css" rel="stylesheet" />
-    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30,"palette":[]}) })</script>
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Presentation Ninja
-### 
+# Aprendiendo R
 
 ---
 
 
-background-image: url(https://upload.wikimedia.org/wikipedia/commons/b/be/Sharingan_triple.svg)
 
 
+
+background-size: cover
+class: animated slideInRight fadeOutLeft, middle
+
+
+
+
+
+
+
+
+
+
+<div>
+<style type="text/css">.xaringan-extra-logo {
+width: 110px;
+height: 128px;
+z-index: 0;
+background-image: url(logo.png);
+background-size: contain;
+background-repeat: no-repeat;
+position: absolute;
+top:1em;right:1em;
+}
+</style>
+<script>(function () {
+  let tries = 0
+  function addLogo () {
+    if (typeof slideshow === 'undefined') {
+      tries += 1
+      if (tries < 10) {
+        setTimeout(addLogo, 100)
+      }
+    } else {
+      document.querySelectorAll('.remark-slide-content:not(.title-slide):not(.inverse):not(.hide_logo)')
+        .forEach(function (slide) {
+          const logo = document.createElement('div')
+          logo.classList = 'xaringan-extra-logo'
+          logo.href = null
+          slide.appendChild(logo)
+        })
+    }
+  }
+  document.addEventListener('DOMContentLoaded', addLogo)
+})()</script>
+</div>
+
+
+
+
+&lt;br/&gt; 
+# &lt;h1 style="font-size:80px;"&gt;**Visualización de datos con R y ggplot**&lt;/h1&gt;
+### Parte 1
+### Jesica Formoso
+&lt;br/&gt; &lt;br/&gt; 
+#### &lt;h4 style="color:#655582;"&gt; Laboratorio de Análisis Estadístico de la Facultad de Psicología&lt;/h4&gt;
+
+
+---
+class: center, top
+&lt;!-- Diapo 1 --&gt; 
+
+&lt;br/&gt;
+## Visualización de datos
+&lt;br/&gt;
+.left[
+- Representar información por medio de gráficos para: 
+  
+  - Explorar nuestros datos: Ayuda a identificar patrones, valores atípicos, tendencias y distribuciones. 
+  
+  - Comunicar datos a terceros de forma eficiente: condensan mucha información en un espacio acotado y facilitan su interpretación. ]
+
+---
+
+class: center, top
+&lt;!-- Diapo 2 --&gt; 
+&lt;br/&gt;
+## ¿Por qué usar ggplot2?
+&lt;br/&gt;
+
+.left[
+- Tiene una **gramática** subyacente (Gramática de gráficos de Wilkinson):
+  - Conjunto de componentes.
+  - Reglas para combinarlos.
+]
+
+.left[
+- Es muy flexible y fomenta el uso de gráficos diseñados para un problema particular en lugar de depender de estructuras genéricas.
+]
+
+.left[
+- Es parte del **tidyverse**, un conjuntos de paquetes de R que comparten una gramática común para la exploración, manipulación y visualización con datos ordenados. 
+]
+
+
+---
+&lt;!-- Diapo 3 --&gt; 
+&lt;br/&gt;
+## Estructura de los gráficos de ggplot 
+&lt;br/&gt;
+
+- &lt;p style="color:#C70039;font-size:30px;"&gt;Conjunto de datos&lt;/p&gt;
+
+- &lt;p style="color:#C70039;font-size:30px;"&gt;Mapeo de las variables a atributos estéticos (aes)&lt;/p&gt;
+
+- &lt;p style="color:#C70039;font-size:30px;"&gt;Representaciones geométricas (geoms) &lt;/p&gt;
+
+- Facetas
+
+- Escalas
+
+- Coordenadas
+
+- Temas
+
+---
+&lt;!-- Diapo 4 --&gt; 
+&lt;br/&gt;
+## Como organizar los datos
+
+&lt;br/&gt;&lt;br/&gt;
+
+
+![](datos_ordenados.svg)
+
+- Cada variable se ubica en una columna
+
+- Cada observación en una fila
+
+- Cada valor en una celda
+---
+&lt;!-- Diapo 5 --&gt; 
+&lt;br/&gt;
+## Como organizar los datos
+
+&lt;table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Sexo &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Altura &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Peso &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 188 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 110 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 175 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 74 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 188 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 96 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 182 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 177 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 94 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 171 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 69 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 175 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 83 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 174 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 76 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 170 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 80 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 161 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 71 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+&lt;!-- Diapo 6 --&gt; 
+&lt;br/&gt;
+## Como organizar los datos
+
+
+
+&lt;table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Dieta &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Sexo &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Altura &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Peso &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pre &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 188 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 110 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Post &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 188 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 110 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pre &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 175 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 74 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Post &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 175 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 74 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pre &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 188 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 96 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Post &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 188 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 96 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pre &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 182 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Post &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 182 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pre &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 177 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 94 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Post &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 177 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 94 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+&lt;!-- Diapo 7 --&gt; 
+&lt;br/&gt;
+## Un error muy común
+
+&lt;table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Sexo &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Peso1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Peso2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Peso3 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 80 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 77 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 73 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 90 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 85 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Femenino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 60 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 55 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 86 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 82 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 79 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 76 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 74 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 80 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 79 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 77 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 90 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 88 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 74 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 71 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 84 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 83 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 81 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 63 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 59 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 59 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+&lt;!-- Diapo 8 --&gt; 
+
+&lt;br/&gt;
+## Definir la base de datos
+
+
+```r
+ggplot(data = Base_datos)
+```
+
+&lt;img src="index_files/figure-html/alt_peso-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+&lt;!-- Diapo 9 --&gt; 
+&lt;br/&gt;
+## Definir las variables que serán representadas en el gráfico
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso))
+```
+
+&lt;img src="index_files/figure-html/alt_peso2-1.png" width="56%" style="display: block; margin: auto;" /&gt;
+---
+&lt;!-- Diapo 10 --&gt; 
+&lt;br/&gt;
+## Definir la forma en que van a representarse esas variables
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso)) +
+  geom_point() 
+```
+
+&lt;img src="index_files/figure-html/alt_peso3-1.png" width="56%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;!-- Diapo 11 --&gt; 
+&lt;br/&gt;
+## Posición
+
+&lt;img src="index_files/figure-html/alt_peso4-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;br/&gt;
+- Cada observación es un punto, ubicado de acuerdo a los valores que tiene en dos variables. 
+- Cada punto tiene un tamaño, un color y una forma. 
+- Las variables pueden mapearse a estos atributos. 
+---
+&lt;!-- Diapo 12 --&gt; 
+&lt;br/&gt;
+## Color, forma y tamaño
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso, color = Sexo)) +
+  geom_point()
+```
+
+&lt;img src="index_files/figure-html/alt_peso5-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+&lt;!-- Diapo 13 --&gt; 
+&lt;br/&gt;
+## Color, forma y tamaño
+
+&lt;img src="index_files/figure-html/alt_peso6-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+&lt;br/&gt;
+- Cada observación tiene una posición determinada en base al valor que toma en las variables peso y altura. 
+- Cada observación tiene un color determinado en base al valor que toma en la variable sexo. 
+
+---
+&lt;!-- Diapo 14 --&gt; 
+&lt;br/&gt;
+## Color, forma y tamaño
+
+&lt;img src="index_files/figure-html/alt_peso7-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+&lt;br/&gt;
+El sujeto con ID 10 pesa 66 kg, mide 162 cm y es de sexo Femenino.
+
+---
+&lt;!-- Diapo 15 --&gt; 
+&lt;br/&gt;
+## Color, forma y tamaño
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso, shape = Sexo)) +
+  geom_point()
+```
+
+&lt;img src="index_files/figure-html/alt_peso6b-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;!-- Diapo 16 --&gt; 
+&lt;br/&gt;
+## Color, forma y tamaño
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso, size = Sexo)) +
+  geom_point()
+```
+
+&lt;img src="index_files/figure-html/alt_peso6c-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;!-- Diapo 17 --&gt; 
+&lt;br/&gt;
+## Color, forma y tamaño
+.pull-left[
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, 
+                     y = Peso)) +
+  geom_point(aes(color = Sexo))
+```
+
+&lt;img src="index_files/figure-html/alt_peso6e-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, 
+                     y = Peso)) +
+  geom_point(color = "green")
+```
+
+&lt;img src="index_files/figure-html/alt_peso6d-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+&lt;!-- Diapo 18 --&gt; 
+
+&lt;br/&gt;
+## Objetos geométricos (geoms)
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso, color = Sexo)) +
+  geom_line()
+```
+
+&lt;img src="index_files/figure-html/alt_peso8-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;!-- Diapo 19 --&gt; 
+&lt;br/&gt;
+## Objetos geométricos(geoms)
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso, color = Sexo)) +
+  geom_bar(stat = "identity", position = "identity")
+```
+
+&lt;img src="index_files/figure-html/alt_peso9-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+
+class: center, middle
+&lt;!-- Diapo 20 --&gt; 
+
+# &lt;h1 style="font-size:80px;"&gt;**Vamos a R..**&lt;/h1&gt;
+
+
+---
+&lt;!-- Diapo 21 --&gt; 
+&lt;br/&gt;
+## Estructura de los gráficos de ggplot 
+&lt;br/&gt;
+
+- Conjunto de datos
+
+- Mapeo de las variables a atributos estéticos (Aesthetics)
+
+- Representaciones geométricas (geoms)
+
+- &lt;p style="color:#C70039;font-size:30px;"&gt;Facetas&lt;/p&gt;
+
+- &lt;p style="color:#C70039;font-size:30px;"&gt;Escalas&lt;/p&gt;
+
+- Coordenadas
+
+- Temas
+
+---
+&lt;!-- Diapo 21 --&gt; 
+&lt;br/&gt;
+## Facetas
+&lt;br/&gt;
+Generan múltiples gráficos con iguales características pero que describen subgrupos de los datos. 
+
+- facet_null(): es el valor por defecto. Grafica un único panel. 
+
+- facet_wrap(): genera un gráfico por cada nivel de una variable categórica. Permite organizarlos en más de una fila o columna. 
+
+- facet_grid(): genera una matriz de gráficos en base a una o más variables categóricas. 
+
+---
+&lt;!---Diapo22---&gt;
+&lt;br/&gt;
+## Facetas
+
+&lt;table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; sexo &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; edad &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; area &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; grupo &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; ansiedad &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 69 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 69 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Rural &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tratamiento B &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bajo &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Femenino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 33 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Rural &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Control &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Medio &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 33 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 33 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Femenino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Urbana &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tratamiento A &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bajo &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Femenino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Rural &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Control &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alto &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 51 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 51 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Femenino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Rural &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tratamiento A &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bajo &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 62 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 62 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Femenino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 33 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Rural &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tratamiento B &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Medio &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 76 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 76 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Femenino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Urbana &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tratamiento B &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bajo &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Urbana &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Control &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Medio &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 46 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 46 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Rural &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tratamiento A &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Medio &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 58 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Masculino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 32 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Urbana &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tratamiento A &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Medio &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+&lt;!---Diapo23---&gt;
+
+# Facetas
+
+```r
+ggplot(data = ej,
+       mapping = aes(x = ansiedad)) +
+  geom_bar()
+```
+
+&lt;img src="index_files/figure-html/fac1-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+&lt;!---Diapo23---&gt;
+
+# Facetas
+
+```r
+ggplot(data = ej,
+       mapping = aes(x = ansiedad, fill = grupo)) +
+  geom_bar(position = "dodge")
+```
+
+&lt;img src="index_files/figure-html/fac2-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+# Facetas
+
+```r
+ggplot(data = ej,
+       mapping = aes(x = ansiedad, fill = grupo)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(~ sexo)
+```
+
+&lt;img src="index_files/figure-html/fac3-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+---
+
+&lt;br/&gt;
+## Escalas
+&lt;br/&gt;
+Controlan como se mapean los datos a las aesthetics (posición, color, tamaño, forma).
+
+Los tipos de variables y los aesthetics generan ciertas escalas por defecto:
+
+- scale_x_continuos (Altura).
+
+- scale_y_continuos (peso).
+
+- scale_color_discrete (sexo).
+
+---
+&lt;!-- Diapo 22 --&gt; 
+&lt;br/&gt;
+## Escalas
+&lt;br/&gt;
+La estructura general es scale_*:
+
+- posición scale\_x\_\* y scale\_y\_\*
+
+- color scale\_color\_\* y scale\_fill\_\*
+
+- forma scale\_shape\_\*
+
+- tamaño scale\_size\_\*
+
+- transparencia scale\_alpha\_\*
+
+---
+&lt;!-- Diapo 16 --&gt; 
+&lt;br/&gt;
+## Escalas
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso, color = Sexo)) +
+  geom_point()
+```
+
+&lt;img src="index_files/figure-html/esc1-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+&lt;!-- Diapo 23 --&gt; 
+## Escalas
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso, color = Sexo)) +
+  geom_point() +
+  scale_y_continuous(name = "Peso en kg", 
+                     limits = c(40, 70))
+```
+
+&lt;img src="index_files/figure-html/esc2-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+---
+&lt;!-- Diapo 24 --&gt; 
+## Escalas
+
+
+
+```r
+ggplot(data = Base_datos,
+       mapping = aes(x = Altura, y = Peso, color = Sexo)) +
+  geom_point() +
+  scale_y_continuous(name = "Categoría de peso", 
+                     breaks = c(40, 70, 90),
+                     labels = c("Bajo", "Medio", "Alto"))
+```
+
+&lt;img src="index_files/figure-html/esc3-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;!-- Diapo 25 --&gt; 
+## Escalas
+
+
+
+```r
+ggplot(data = ej,
+       mapping = aes(x = ansiedad, fill = grupo)) +
+  geom_bar(position = "dodge") 
+```
+
+&lt;img src="index_files/figure-html/esc4-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+---
+&lt;!-- Diapo 25 --&gt; 
+## Escalas
+
+
+
+```r
+ggplot(data = ej,
+       mapping = aes(x = ansiedad, fill = grupo)) +
+  geom_bar(position = "dodge") +
+  scale_x_discrete(limits = c("Bajo", "Medio", "Alto"))
+```
+
+&lt;img src="index_files/figure-html/esc5-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;!-- Diapo 25 --&gt; 
+## Escalas
+
+
+
+```r
+ggplot(data = ej,
+       mapping = aes(x = ansiedad, fill = grupo)) +
+  geom_bar(position = "dodge") +
+  scale_x_discrete(limits = c("Bajo", "Medio", "Alto")) +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 0.01, 
+                                                    scale = 1))
+```
+
+&lt;img src="index_files/figure-html/esc6-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: center, middle
+&lt;!-- Diapo 20 --&gt; 
+
+# &lt;h1 style="font-size:80px;"&gt;**Vamos a R..**&lt;/h1&gt;
+
+
+---
+&lt;!-- Diapo 21 --&gt; 
+&lt;br/&gt;
+## Estructura de los gráficos de ggplot 
+&lt;br/&gt;
+
+- Conjunto de datos
+
+- Mapeo de las variables a atributos estéticos (Aesthetics)
+
+- Representaciones geométricas (geoms)
+
+- Facetas
+
+- Escalas
+
+- &lt;p style="color:#C70039;font-size:30px;"&gt;Coordenadas&lt;/p&gt;
+
+- Temas
+
+---
+
+## Coordenadas
+
+Los sistemas de coordenadas combinan las dos posiciones (aestheticas X e y) para ubicar los distintos elementos en un gráfico de 2 dimensiones. 
+
+- coord_cartesian(): Coordenadas por defecto. 
+
+- coord_flip(): Coordenadas cartesianas pero invertidas. 
+
+- coord_fixed(): Coordenadas cartesianas con una proporción fija entre el ancho y el alto del gráfico. 
+
+- coord_polar(): Coordenadas polares, cada posición está determinada por una distancia y un ángulo.
+
+---
+&lt;!-- Diapo 16 --&gt; 
+&lt;br/&gt;
+## Coordenadas
+
+
+```r
+ggplot(data = ej,
+       mapping = aes(x = ansiedad, fill = grupo)) +
+  geom_bar(position = "dodge") 
+```
+
+&lt;img src="index_files/figure-html/coord1-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;!-- Diapo 16 --&gt; 
+&lt;br/&gt;
+## Coordenadas
+
+
+```r
+ggplot(data = ej,
+       mapping = aes(x = ansiedad, fill = grupo)) +
+  geom_bar(position = "dodge") +
+  coord_flip()
+```
+
+&lt;img src="index_files/figure-html/coord2-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+&lt;!-- Diapo 16 --&gt; 
+&lt;br/&gt;
+## Coordenadas
+
+
+```r
+ggplot(data = ej,
+       mapping = aes(x = ansiedad, fill = grupo)) +
+  geom_bar(position = "dodge") +
+  coord_polar()
+```
+
+&lt;img src="index_files/figure-html/coord3-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;!-- Diapo 16 --&gt; 
+&lt;br/&gt;
+## Coordenadas
+
+
+```r
+ej %&gt;% 
+  count(ansiedad) %&gt;% 
+  mutate(porcentaje = round(n/sum(n)*100), 0) %&gt;% 
+  ggplot(mapping = aes(factor(1), y = porcentaje, fill = ansiedad)) +
+  geom_bar(stat = "identity") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(aes(label = paste(porcentaje,"%", sep = "")),
+            position = position_stack(vjust = 0.5))
+```
+
+&lt;img src="index_files/figure-html/coord4-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+## Por qué es mejor evitar los&lt;br/&gt;gráficos de sectores
+
+.left-column[
+
+### **Visualización**
+
+Resulta más difícil discriminar
+las diferencias entre categorías.
+
+]
+
+.right-column[
+
+&lt;img src="sectores1.png" width="90%" /&gt;
+
+&lt;img src="sectores2.png" width="90%" /&gt;
+
+
+]
+
+---
+## Por qué es mejor evitar los&lt;br/&gt;gráficos de sectores
+
+.pull-left[
+
+### **Representación de la información**
+No son útiles con variables ordinales o con muchas categorías.
+
+
+
+&lt;img src="sectores4.jpeg" width="100%" /&gt;
+
+
+]
+
+.pull-right[
+
+&lt;img src="sectores5.jpeg" width="110%" /&gt;
+
+
+]
+
+---
+## Por qué es mejor evitar los&lt;br/&gt;gráficos de sectores
+
+.left-column[
+
+### **Popularidad**
+¡Tienen mala prensa!
+
+]
+
+.right-column[
+
+&lt;img src="nopie.png" width="80%" /&gt;
+
+
+]
+
+---
+&lt;!-- Diapo 16 --&gt; 
+&lt;br/&gt;
+## Coordenadas: seleccionar&lt;br/&gt;observaciones vs amplificar
+&lt;br/&gt;
+
+- **Seleccionar**: si establecemos el rango de valores que nos interesa graficar con &lt;span style="color:#C70039;"&gt;scale\_*\_continuous()&lt;/span&gt; graficamos las observaciones dentro de ese rango.  
+
+- **Zoom**: si establecemos el rango de valores con &lt;span style="color:#C70039;"&gt;coord_cartesian()&lt;/span&gt; amplificamos un segmento particular del gráfico, pero se toman en cuenta todas las observaciones.  
+
+---
+
+## Seleccionar observaciones vs&lt;br/&gt;amplificar
+
+
+```r
+ggplot(data = Base_datos, aes(x = Altura, y = Peso)) +
+  geom_point() 
+```
+
+&lt;img src="index_files/figure-html/puntos1-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Seleccionar observaciones vs&lt;br/&gt;amplificar
+
+
+```r
+ggplot(data = Base_datos, aes(x = Altura, y = Peso)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+&lt;img src="index_files/figure-html/puntos2-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Seleccionar observaciones vs&lt;br/&gt;amplificar
+
+
+
+
+
+```r
+ggplot(data = Base_datos, aes(x = Altura, y = Peso)) +
+  geom_point() 
+```
+
+&lt;img src="index_files/figure-html/coord5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+## Seleccionar observaciones vs&lt;br/&gt;amplificar
+
+
+```r
+ggplot(data = Base_datos, aes(x = Altura, y = Peso)) +
+  geom_point() +
+  geom_smooth(method = "lm")  
+```
+
+&lt;img src="index_files/figure-html/coord6-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+&lt;!-- Diapo 16 --&gt; 
+
+## Seleccionar observaciones vs&lt;br/&gt;amplificar
+
+
+```r
+ggplot(data = Base_datos, aes(x = Altura, 
+                              y = Peso)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_x_continuous(limits = c(140, 180))
+```
+
+&lt;img src="index_files/figure-html/coord7-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Seleccionar observaciones vs&lt;br/&gt;amplificar
+
+
+```r
+ggplot(data = Base_datos, aes(x = Altura, 
+                              y = Peso)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  coord_cartesian(xlim = c(140, 180))
+```
+
+&lt;img src="index_files/figure-html/coord8-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Seleccionar observaciones vs&lt;br/&gt;amplificar
+
+.pull-left[
+&lt;img src="index_files/figure-html/coord11-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="index_files/figure-html/coord12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+&lt;!-- Diapo 21 --&gt; 
+&lt;br/&gt;
+## Estructura de los gráficos de ggplot 
+&lt;br/&gt;
+
+- Conjunto de datos
+
+- Mapeo de las variables a atributos estéticos (Aesthetics)
+
+- Representaciones geométricas (geoms)
+
+- Facetas
+
+- Escalas
+
+- Coordenadas
+
+- &lt;p style="color:#C70039;font-size:30px;"&gt;Temas&lt;/p&gt;
+
+---
+&lt;/br&gt;
+## Temas (themes)
+&lt;/br&gt;
+Los temas (themes) de ggplot2 controlan todos los aspectos no asociados a los datos como:
+
+- Fuente, tamaño y color del texto,
+
+- Colores del fondo, los ejes, la cuadrícula,
+
+- Posición de la leyenda. 
+
+Entre otros..
+
+---
+# Temas predefinidos
+
+&lt;img src="index_files/figure-html/temas1-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;/br&gt;
+# Función theme()
+&lt;/br&gt;
+
+La función theme() puede utilizarse para modificar aproximadamente 40 elementos, que pueden agruparse en:
+
+- Gráfico (plot)
+
+- Ejes (axis)
+
+- Leyenda (legend)
+
+- Panel (panel)
+
+- Facetas (facet)
+
+---
+&lt;/br&gt;
+## Elementos del gráfico (plot)
+&lt;/br&gt;
+
+.left-column[
+- plot.background()
+
+- plot.margin()
+
+- plot.caption()
+
+- plot.title()
+]
+
+.right-column[
+&lt;img src="index_files/figure-html/temas2-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+---
+&lt;/br&gt;
+# Elementos de los ejes (axis)
+&lt;/br&gt;
+
+.left-column[
+
+- axis.line()
+
+- axis.text()
+
+- axis.ticks()
+
+- axis.title()
+]
+
+.right-column[
+
+&lt;img src="index_files/figure-html/temas3a-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;/br&gt;
+# Elementos de la leyenda (legend)
+&lt;/br&gt;
+
+.left-column[
+
+- legend.background()
+
+- legend.text()
+
+- legend.position()
+
+- legend.title()
+]
+
+.right-column[
+
+&lt;img src="index_files/figure-html/temas3-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+&lt;/br&gt;
+# Elementos del panel
+&lt;/br&gt;
+
+.left-column[
+
+- panel.background()
+
+- panel.border()
+
+- panel.grid.mayor()
+
+- panel.grid.minor()
+]
+
+.right-column[
+
+&lt;img src="index_files/figure-html/temas4-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+&lt;/br&gt;
+# Elementos de las facetas
+&lt;/br&gt;
+
+.left-column[
+
+- strip.background()
+
+- strip.text()
+
+- panel.margin()
+
+]
+
+.right-column[
+
+&lt;img src="index_files/figure-html/temas5-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+]
+---
+
+class: center, middle
+&lt;!-- Diapo 20 --&gt; 
+
+# &lt;h1 style="font-size:80px;"&gt;**Vamos a R..**&lt;/h1&gt;
+
+---
+
+&lt;/br&gt;
+## Cómo guardar los gráficos
+&lt;/br&gt;
+
+**Opción 1**: 
+
+Abrir un dispositivo gráfico, generar el gráfico, cerrar el dispositivo. 
+
+
+
+```r
+jpeg(filename = "Grafico1.jpg", width = 6, height = 6, 
+     units = "cm", res = 300)
+
+ggplot(data = Base_datos, aes(x = Altura, y = Peso)) +
+  geom_point()
+
+dev.off()
+```
+
+Tipos de archivo: jpeg, png, svg, pdf, tiff.
+Unidades: cm, px, in, mm. 
+
+---
+
+&lt;/br&gt;
+## Cómo guardar los gráficos
+&lt;/br&gt;
+
+**Opción 2**: 
+
+Crear el gráfico y luego utilizar ggsave() de ggplot2. 
+
+
+```r
+ggplot(data = Base_datos, aes(x = Altura, y = Peso)) +
+  geom_point()
+
+ggsave("Gráfico1.jpg", plot = last_plot(), width = 6,
+       height = 6, units = "cm", dpi = 300)
+```
+
+
+Tipos de archivo: jpeg, png, svg, pdf, tiff.
+Unidades: cm, px, in, mm. 
+  
+---
+
+&lt;/br&gt;
+## Cómo guardar los gráficos
+&lt;/br&gt;
+
+**Opción 3**:
+
+Utilizar "Export" en la pestaña de gráficos de RStudio. 
+
+No es recomendable:
+
+- No se controla la calidad de la imagen. 
+
+- Habrá que repetir la operación cada vez que realicemos una modificación en el gráfico o los datos. 
+
+---
+
+class: center, middle
+&lt;!-- Diapo 20 --&gt; 
+
+# &lt;h1 style="font-size:80px;"&gt;**Vamos a R..**&lt;/h1&gt;
+
+---
+
+
+class: center, middle
+&lt;!-- Diapo 20 --&gt; 
+
+# &lt;h1 style="font-size:80px;"&gt;**Continuamos la próxima clase**&lt;/h1&gt;
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
