@@ -86,7 +86,7 @@ class: center, top
 .left[
 - Representar información por medio de gráficos para: 
   
-  - Explorar nuestros datos: Ayuda a identificar patrones, valores atípicos, tendencias y distribuciones. 
+  - Explorar nuestros datos: ayuda a identificar patrones, valores atípicos, tendencias y distribuciones. 
   
   - Comunicar datos a terceros de forma eficiente: condensan mucha información en un espacio acotado y facilitan su interpretación. ]
 
@@ -136,22 +136,22 @@ class: center, top
 ---
 <!-- Diapo 4 --> 
 <br/>
-## Como organizar los datos
+## Cómo organizar los datos
 
 <br/><br/>
 
 
 ![](datos_ordenados.svg)
 
-- Cada variable se ubica en una columna
+- Cada variable se ubica en una columna.
 
-- Cada observación en una fila
+- Cada observación, en una fila.
 
-- Cada valor en una celda
+- Cada valor, en una celda.
 ---
 <!-- Diapo 5 --> 
 <br/>
-## Como organizar los datos
+## Cómo organizar los datos
 
 ```{r datos-tidy, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -175,7 +175,7 @@ a %>%
 ---
 <!-- Diapo 6 --> 
 <br/>
-## Como organizar los datos
+## Cómo organizar los datos
 
 
 
@@ -389,7 +389,7 @@ ggplot(data = Base_datos,
 ---
 <!-- Diapo 19 --> 
 <br/>
-## Objetos geométricos(geoms)
+## Objetos geométricos (geoms)
 
 ```{r alt_peso9, message=FALSE, warning=FALSE, fig.asp = 0.8, fig.width = 4, out.width="60%",fig.align='center', dpi=300}
 
@@ -403,7 +403,7 @@ ggplot(data = Base_datos,
 class: center, middle
 <!-- Diapo 20 --> 
 
-# <h1 style="font-size:80px;">**Vamos a R..**</h1>
+# <h1 style="font-size:80px;">**Vamos a R...**</h1>
 
 
 ---
@@ -653,7 +653,7 @@ class: center, middle
 
 ## Coordenadas
 
-Los sistemas de coordenadas combinan las dos posiciones (aestheticas X e y) para ubicar los distintos elementos en un gráfico de 2 dimensiones. 
+Los sistemas de coordenadas combinan las dos posiciones (aestheticas x e y) para ubicar los distintos elementos en un gráfico de 2 dimensiones. 
 
 - coord_cartesian(): Coordenadas por defecto. 
 
@@ -978,9 +978,9 @@ ggplot(data = Base_datos, aes(x = Altura,
 </br>
 Los temas (themes) de ggplot2 controlan todos los aspectos no asociados a los datos como:
 
-- Fuente, tamaño y color del texto,
+- Fuente, tamaño y color del texto.
 
-- Colores del fondo, los ejes, la cuadrícula,
+- Colores del fondo, ejes, cuadrícula.
 
 - Posición de la leyenda. 
 
